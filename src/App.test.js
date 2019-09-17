@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { configure } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
-
+import MyComponent from "./components/MyComponent";
 configure({ adapter: new Adapter() });
 import { shallow } from "enzyme";
 import App from "./App";
@@ -27,4 +27,58 @@ it("renders welcome message", () => {
   const welcome = <h2>Welcome to React</h2>;
   // expect(wrapper.contains(welcome)).toBe(true);
   expect(wrapper.contains(welcome)).toEqual(true);
+});
+const myBeverage = {
+  delicious: true,
+  sour: false
+};
+
+describe("my beverage", () => {
+  test("is delicious", () => {
+    expect(myBeverage.delicious).toBeTruthy();
+  });
+
+  test("is not sour", () => {
+    expect(myBeverage.sour).toBeFalsy();
+  });
+});
+
+describe("MyComponent", () => {
+  it("should render correctly", () => {
+    const component = shallow(<MyComponent />);
+  });
+  it("should render initial layout", () => {
+    // when
+    const component = shallow(<MyComponent />);
+    // then
+    expect(component.getElements()).toMatchSnapshot();
+  });
+  it("should create an entry in component state", () => {
+    // given
+    const component = shallow(<MyComponent />);
+    const form = component.find("input");
+    // when
+    form.props().onChange({
+      target: {
+        name: "myName",
+        value: "myValue"
+      }
+    });
+    // then
+    expect(component.state("input")).toBeDefined();
+  });
+  it("should create an entry in component state with the event value", () => {
+    // given
+    const component = shallow(<MyComponent />);
+    const form = component.find("input");
+    // when
+    form.props().onChange({
+      target: {
+        name: "myName",
+        value: "myValue"
+      }
+    });
+    // then
+    expect(component.state("input")).toEqual("myValue");
+  });
 });
